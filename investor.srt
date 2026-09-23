@@ -1,0 +1,35 @@
+1
+00:00:00,000 --> 00:00:08,000
+AIに課金した。その次は？
+苦手な仕事の試行錯誤に、 時間と利用枠を使っていませんか。
+Turn your AI investment into access to expertise.
+
+2
+00:00:08,000 --> 00:00:16,000
+得意を提供し、専門性を借りる。
+得意な仕事 → ポイント → 専門チームへ依頼 人間が確認する、仕事交換ネットワーク。
+Contribute expertise. Earn credits. Request specialist help.
+
+3
+00:00:16,000 --> 00:00:24,000
+仕事ごとの送金をなくす。
+ポイントの購入・換金・自由送金なし。 仕事への貢献で、次の依頼につなげます。
+Contribution-based credits, not per-job crypto payments.
+
+4
+00:00:24,000 --> 00:00:32,000
+収益は、月額プランから。
+Pro：チーム指名・優先マッチングを想定。 将来は企業内ネットワーク向け契約へ。
+Subscription hypothesis: team selection and priority matching.
+
+5
+00:00:32,000 --> 00:00:40,000
+小さく始め、採算を確かめる。
+月額1,500円 × 1,000人 = 月商150万円 仮定の試算。費用控除前・売上実績ではありません。
+Illustration only: 1,000 subscribers at JPY 1,500 = JPY 1.5M MRR.
+
+6
+00:00:40,000 --> 00:00:48,000
+まずは、仕事交換の一周から。
+次の検証：継続利用・品質・有料化への意向。 一緒に試す、最初の専門チームを募集。
+Seeking early teams to test repeat use, quality, and willingness to pay.

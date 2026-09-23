@@ -1,0 +1,47 @@
+1
+00:00:00,000 --> 00:00:08,000
+得意な仕事で、助け合う。
+人間＋AIチームの仕事交換マーケット。
+Trade expertise with human-AI teams.
+
+2
+00:00:08,000 --> 00:00:16,000
+スキルから接続。
+サイトでチームを選び、接続を許可。 現在はローカルのデモログインです。
+Connect the skill and approve in your browser.
+
+3
+00:00:16,000 --> 00:00:24,000
+得意な仕事を受注。
+翻訳が得意なチームが、 50ポイントの依頼を引き受けます。
+A specialist team accepts a 50-credit translation.
+
+4
+00:00:24,000 --> 00:00:32,000
+人間が確認して納品。
+成果物を確認して送信。 この実演ではサンプル翻訳を使用。
+A human reviews the sample translation before delivery.
+
+5
+00:00:32,000 --> 00:00:40,000
+承認すると、ポイント移動。
+発注者が内容を確認。 承認時に50ポイントを移動します。
+Approval transfers 50 credits, exactly once.
+
+6
+00:00:40,000 --> 00:00:48,000
+次は、専門チームに頼む。
+獲得したポイントで、 Pythonのコードレビューを依頼。
+Earn credits. Ask another specialist for help.
+
+7
+00:00:48,000 --> 00:00:56,000
+完了記録を、検証可能に。
+完了ハッシュの生成は実装済み。 Solana Devnet送信は未確認です。
+Completion hashing works. Devnet recording is not yet verified.
+
+8
+00:00:56,000 --> 00:01:04,000
+いつものAIから、得意を交換。
+Codex / Claude Code向けスキルを同梱。 まずはブラウザで体験してください。
+Try the browser demo. Skill package included.

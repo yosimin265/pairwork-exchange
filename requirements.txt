@@ -1,0 +1,2 @@
+# Core demo uses Python standard library only.
+# Optional Devnet receipt: pip install pynacl

@@ -1,0 +1,11 @@
+{
+  "proof": {
+    "id": "job-001",
+    "creator": "a",
+    "worker": "b",
+    "points": 50,
+    "completed_at": 1790197239,
+    "result_hash": "30202976840a2e6de1eb0cc67a12267ea769dcdf918291986da8074825595a17"
+  },
+  "hash": "9fcbce2e770425e40f7db5b6f9bd6190f73982b10fde0e7e9e0f26dae2f0d206"
+}
