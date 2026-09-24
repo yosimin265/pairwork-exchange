@@ -1,133 +1,122 @@
 # PairWork
 
-**いつものAIから、得意を交換。 / Trade expertise with human-AI teams.**
+**Trade expertise with human-AI teams.**
 
-人間とAIのチームが得意な仕事でポイントを獲得し、専門性の異なるチームへ仕事を依頼する、2026年のハッカソン向けプロトタイプです。
+PairWork is a 2026 hackathon prototype for exchanging specialist work. A human-AI team earns credits by completing work in its strongest field, then uses those credits to request help from a different specialist team.
 
-> **制作版です。** 2チームのローカルデモであり、一般向けの運用サービスではありません。募集要項・提出動画の尺は未確認です。Solana Devnetへの送信はテストSOL配布エラーにより未確認です。
+> **Prototype, not a live service.** The local version has two demo teams and no public account system. The current hackathon rules and required video lengths have not been checked. Solana Devnet submission remains unverified because the test-SOL faucet failed or rate-limited the attempt.
 
-![PairWorkの編集ビジュアル：二人の専門家が机で共同作業するAI生成画像](editorial-collaboration.png)
+![AI-generated editorial illustration of two specialists reviewing work together](editorial-collaboration.png)
 
-## 見る・試す
+## Watch and try
 
-- [デモ解説動画：60秒・英語ナレーションと字幕](demo.mp4)（[WebVTT](demo.vtt) / [SRT](demo.srt)）
-- [投資家向け動画：54秒・英語ナレーションと字幕](investor.mp4)（[WebVTT](investor.vtt) / [SRT](investor.srt)）
-- [概要PDF：日本語1ページ](overview-ja.pdf)
-- [English overview](overview-en.md)
-- [実装状況と検証記録](STATUS.md)
-- [AI生成画像の制作プロンプト](IMAGE_PROMPTS.md)
-- [完全ソース一式（スキルとテストを含む）](pairwork-source.zip)
+- [Complete source package, including the skill and tests](pairwork-source.zip)
 
-サイトは写真と紙面のようなレイアウトを用いた編集デザインです。サイトと動画で使う2枚の人物写真はAI生成画像であり、実在の利用者や実際の仕事を撮影したものではありません。動画は実装画面のキャプチャと説明スライドを編集し、英語の合成音声ナレーションと字幕を付けたものです。サンプル翻訳を使用しており、AI製品が自動で作業する録画ではありません。
+- [Product walkthrough: 60 seconds, English narration and captions](demo.mp4) ([WebVTT](demo.vtt) / [SRT](demo.srt))
+- [Investor pitch: 54 seconds, English narration and captions](investor.mp4) ([WebVTT](investor.vtt) / [SRT](investor.srt))
+- [One-page English overview](overview-en.pdf) and [detailed English overview](overview-en.md)
+- [Build status and verification record](STATUS.md)
+- [Prompts for the AI-generated editorial images](IMAGE_PROMPTS.md)
 
-### 最も簡単な体験
+The site uses an editorial design with photographs and explanatory diagrams. Its two portraits were generated with AI and do not show actual PairWork users or completed jobs. The videos combine an illustrated demo flow and explanatory slides with synthetic English narration. The product walkthrough illustrates sample work; it does not show Codex or Claude Code autonomously doing a job. The current playable demo starts with a documentation-polishing request.
 
-[公開ブラウザデモ](https://yosimin265.github.io/pairwork-exchange/)で体験できます。ローカルで開く場合は、`index.html`、`editorial-collaboration.png`、`editorial-review.png` を同じフォルダに置いてください。GitHubのファイル表示画面では実行されません。データはブラウザ内に保存され、初期状態は各チーム300pt、翻訳依頼50ptです。
+### Fastest path: public browser preview
 
-### スキルとつながるローカル版
+Open the [playable browser demo](https://yosimin265.github.io/pairwork-exchange/). Its state is stored in your browser's `localStorage`, so it is separate from the Python server and does not connect a Codex or Claude Code skill. To open `index.html` locally, keep `editorial-collaboration.png` and `editorial-review.png` beside it. GitHub's file preview does not run the app.
 
-Python 3.10以上が必要です。コア機能に追加パッケージは不要です。
+The starting state gives each team 300 credits and includes a 50-credit Documentation request to polish the PairWork introduction. Switch between Kai + Codex and Mio + Claude Code to walk through the exchange.
+
+### Local version with the skill client
+
+Python 3.10 or later is required. The core server uses only the Python standard library.
 
 ```sh
 python3 server.py
 ```
 
-ブラウザで `http://127.0.0.1:8765` を開きます。macOSでは `sh start.command` をターミナルから実行することもできます。
+Open `http://127.0.0.1:8765` in a browser. On macOS, `sh start.command` starts the server as well.
 
-1. Mio + Claude Code を選んで翻訳依頼を受注。
-2. 納品画面で「サンプルを入力」し、確認して納品。
-3. Kai + Codex に切り替え、成果物を確認して承認。
-4. Kaiは250pt、Mioは350ptになることを確認。
-5. Mioに切り替え、50ptでPythonのコードレビューを投稿。
-6. 完了記録からSHA-256を確認。ハッシュだけでオンチェーン記録済みとはなりません。
+1. Select Mio + Claude Code and accept the starter documentation-polishing request.
+2. Insert the sample result in the delivery dialog, review it, and submit it.
+3. Switch to Kai + Codex, inspect the result, and approve it.
+4. Confirm Kai now has 250 credits and Mio has 350.
+5. As Mio, post a new 50-credit Python code-review request.
+6. Inspect the completion record and its SHA-256 hash. A hash alone does not mean a transaction was recorded on-chain.
 
-### 専用スキルを導入
-
-解凍したソースのルートから、利用するプロジェクトに導入します。既存スキルは上書きしません。
+To add the optional skill to a project, run these commands from the unpacked source root. The installer does not overwrite an existing skill:
 
 ```sh
 python3 install_skill.py --target codex --project /absolute/path/to/your/project
 python3 install_skill.py --target claude --project /absolute/path/to/your/project
 ```
 
-対象プロジェクトをCodexまたはClaude Codeで開き、「PairWorkに接続して」と依頼します。スキルは `scripts/client.py connect` を実行し、ブラウザを開きます。チームを選択し「このチームで接続を許可」を押すと接続完了です。
+Open that project in Codex or Claude Code and ask it to connect to PairWork. The skill instructs the client to run `scripts/client.py connect`, which opens a local browser approval page. Choose a demo team and approve the connection there.
 
-これは**公開サイトへの通常ログインではなく、ローカルデモ接続**です。両製品内のスキル自動認識・実機操作は未確認です。共通クライアントの接続、残高取得、投稿・受注・納品・承認のAPIは検証しています。今回の版は直接APIを呼ぶスキルであり、MCPサーバーは含みません。
+This is **local demo authorization, not a public sign-in**. Automatic skill recognition and end-to-end operation inside both AI products have not been verified. The common client has been checked for connection, balance retrieval, and the post/accept/deliver/approve API flow. This version calls the local API directly; it is not an MCP server. Its `.session.json` file contains a local session and must not be shared or committed. Sessions expire after eight hours or a server restart. The server is bound to localhost and is not a production service for people on separate computers.
 
-セッションはスキル内 `.session.json` に保存されます。公開しないでください。サーバー再起動または8時間後は再接続が必要です。2人が別PCから使う本番ネットワークではありません。
+## Why earned credits?
 
-## なぜポイントか
+The intended loop is **install a skill → approve a local connection → contribute skilled work → human review → earn credits → request another specialty**. Each team uses its own Codex, Claude Code, or other AI subscription as a tool. It does not rent or share an account or usage allowance.
 
-- CodexやClaude Codeなど、自分が使い慣れたAIを得意分野の仕事に生かし、貢献に応じてポイントを得る。そのポイントで苦手な仕事を専門チームに依頼する。
-- 「スキル導入 → 接続許可 → 受注・納品 → 人間による確認・承認 → ポイント獲得 → 次の依頼」という流れを想定。現行のスキル接続はローカルデモで、公開アカウント連携は未実装。
-- ステーブルコイン決済型の方式に対し、貢献で獲得したポイントで仕事を交換。
-- ポイントの販売・換金・自由送金なし。依頼ごとの暗号資産購入や送金操作なし。
-- AI単体ではなく、人間が確認するチーム同士の協力。
-- 各チームが自分のAIを道具として使う。アカウントや利用枠の転貸を行わない。
+Compared with a per-job stablecoin payment model, PairWork does not require buying or transferring crypto for each task. Credits are earned by contribution and cannot be purchased, cashed out, or transferred freely. A person still reviews each deliverable and decides whether to approve it. This could reduce payment steps, but ease of use, time savings, usage savings, and legal or policy implications have not been measured. We make no claim that a particular competitor works a certain way or that this design removes all fees or legal risk.
 
-特定競合の機能比較や「規約・法的リスクがない」という主張はしていません。時間や利用枠の節約効果は未計測です。
+## Solana's role and future direction
 
-## Solanaの役割
-
-完了レコードのSHA-256を、運営のDevnet署名者がMemoに記録する設計です。成果物や個人情報を送る設計ではありません。ポイント台帳はSQLite内です。
+The current design creates a SHA-256 hash of a completed-job record and includes a script for the operator to sign and publish that hash in a Solana Devnet Memo. The work product, personal information, and credentials are not intended for the chain. Credits themselves remain in the local SQLite ledger.
 
 ```sh
 python3 -m pip install pynacl
-python3 solana_receipt.py --hash <64文字のSHA-256> --out docs/devnet-receipt.json
+python3 solana_receipt.py --hash <64-character-SHA-256> --out docs/devnet-receipt.json
 ```
 
-初回は専用のテスト鍵を `.pairwork/` に作り、Devnetの無料テストSOLを要求します。**Mainnetには対応せず、実資金は扱いません。** faucetが利用できない場合は送信できません。今回の検証ではfaucetがエラーとHTTP 429を返し、確認済みトランザクションは作れていません。成功時のみJSONに署名と確認状態が出ます。
+On first use, the script creates a dedicated test key under `.pairwork/` and requests free Devnet test SOL. It does **not** support Mainnet or handle real funds. The faucet returned an internal error and HTTP 429 during this build, so there is no confirmed Devnet signature. A receipt JSON file is written only after successful submission. A matching hash can show data consistency; it cannot independently prove work quality, a real job, or agreement by both parties. Only the operator signs today; dual-party wallet signatures are not implemented.
 
-ハッシュが示せるのは対応データの一致であり、仕事の品質・実在・双方の合意を独立に保証するものではありません。現状は運営による署名で、当事者双方の署名は未実装です。
+A future version could build a verifiable history of approved work and use it to describe specialty-specific reputation, such as translation or code review. Candidate inputs for identifying strengths and allocating credits include PairWork work logs, AI assessments, requester ratings, completion speed, and experience in each field. Published versions of the allocation rules and records of how they were applied could make that process auditable. Expert credentials based on PairWork history could later be presented to other Solana ecosystem services; they would not be official professional licenses.
 
-将来は、当事者の確認と結び付いた完了履歴を検証可能な証跡として積み上げ、翻訳・コードレビューなど分野別の専門性の評判に活用する構想です。得意分野の判定とポイント配分の候補データは、PairWork内の作業ログ、AI評価、依頼者評価、完了までの速度、分野別の経験量です。ポイント配分ルールの版と適用結果を公開し、第三者が配分過程を監査できるようにすることも検討します。さらに、PairWork内の実績に基づく専門家証明書を発行し、Solanaエコシステムの他サービスでも提示できる設計を目指します。証明書は公的資格を意味しません。
+A chain record does not by itself discover expertise, judge quality, or guarantee fair credit allocation. Reputation scoring, the evaluation and allocation logic, public audits, credential issuance, and external interoperability are unimplemented. Input weights, assessment reliability, and fraud defenses are not yet designed or validated. The current Solana component remains an unconfirmed Devnet Memo submission script.
 
-チェーンだけで得意分野の発見、仕事の品質評価、公平なポイント配分が自動的に保証されるわけではありません。評判の算定、評価・配分ロジックの公開と監査、証明書の発行、他サービスとの連携は未実装です。候補データの重み付け、評価の信頼性、不正対策も未設計・未検証です。現時点のSolana機能は完了ハッシュのDevnet Memo送信コードに限られ、確認済み送信はありません。
+## Business hypothesis
 
-## 収益モデル（仮説）
+The proposed business asks whether people who already pay for AI tools would also pay to access specialist human-AI teams. This is a demand hypothesis, not a measured market size. Work exchanges would use earned credits; a **proposed $10/month Pro plan** could offer team selection and priority matching. Private enterprise networks are a later possibility. Credits would not be sold.
 
-AIツールに継続課金する利用者が専門家の助けにも対価を払うかを検証します。これは市場規模の推計ではありません。仕事交換そのものは貢献で得たポイントで行い、運営はチーム指名・優先マッチングを含むPro月額で収益を得る構想です。将来は企業内ネットワーク契約も検討します。ポイント自体は売りません。
+The underlying tools have sizable audiences. [OpenAI reported more than 5 million weekly active Codex users in June 2026](https://openai.com/index/codex-for-knowledge-work/), while [Anthropic reported in February 2026 that Claude Code business subscriptions had quadrupled since the start of that year](https://www.anthropic.com/news/anthropic-raises-30-billion-series-g-funding-380-billion-post-money-valuation). These are company-reported signals for coding AI, **not** PairWork's addressable market, users, or paying members.
 
-需要の背景として、[OpenAIは2026年6月にCodexの週間アクティブ利用者が500万人超](https://openai.com/index/codex-for-knowledge-work/)と発表し、[Anthropicは2026年2月にClaude Codeの法人契約数が年初から4倍](https://www.anthropic.com/news/anthropic-raises-30-billion-series-g-funding-380-billion-post-money-valuation)と発表しました。これは各社が公表した利用動向であり、PairWorkの獲得可能市場や有料会員数を示しません。
+[ChatGPT Pro $100](https://help.openai.com/en/articles/9793128-what-is-chatgpt-pro/) and [Claude Max 5x at $100/month](https://support.claude.com/en/articles/11049741-what-is-the-max-plan?subjects=product) still have usage allowances: [Codex has plan limits](https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan), and Claude Max has a [weekly limit](https://support.claude.com/en/articles/11049741-what-is-the-max-plan?subjects=product). Work could remain when someone is busy or reaches an allowance. In the proposed loop, a member contributes in a strong field during spare time, banks credits, and later asks another team for help. Each team pays for and uses its own AI account; there is no account or quota sharing.
 
-[ChatGPT Pro $100](https://help.openai.com/en/articles/9793128-what-is-chatgpt-pro/) と [Claude Max 5x（月額$100）](https://support.claude.com/en/articles/11049741-what-is-the-max-plan?subjects=product) にも利用枠があり、[Codexの上限](https://help.openai.com/en/articles/11369540-using-codex-with-your-chatgpt-plan) や [Claude Maxの週次上限](https://support.claude.com/en/articles/11049741-what-is-the-max-plan?subjects=product) に達して仕事が残る場面が考えられます。PairWorkでは、空き時間に得意分野で他チームを助けてポイントを貯め、忙しい時に専門チームへ依頼する流れを想定します。各チームは自分のAI契約を使い、アカウントや利用枠を共有しません。
+The $10 Pro price is a **pricing hypothesis** equal to 10% of a $100 AI plan. If specialist help were to improve work efficiency by **10% or more** and help a member move unfinished work toward a deadline, team selection and priority matching *might* be worth $10/month. Neither that improvement nor willingness to pay has been tested, and financial payback is not established.
 
-Proの月額$10は、月額$100のAIプランに対する追加費用の10%という価格仮説です。専門家の助けで作業効率が**仮に10%以上改善**し、限られた時間・利用枠の中でも苦手な仕事を納期に向けて進められるなら、チーム指名・優先マッチングに**月額$10**を払う動機になり得ます。効率改善率も支払意向も未検証で、金銭的な元が取れることを示すものではありません。
+As a revenue illustration, **$10/month × 1,000 paying members = $10,000 in monthly revenue before costs**. Both price and member count are assumptions. This is not traction, profit, or a total-addressable-market estimate. Platform costs could include infrastructure, support, disputes, acquisition, payment processing, and on-chain recording; each team would pay its own AI costs. Retention, acquisition cost, and paid conversion are untested.
 
-例として、Pro月額$10 × 有料会員1,000人 = 月次売上$10,000（費用控除前）です。価格・会員数とも仮定であり、実績・利益・市場規模を表す数字ではありません。運営インフラ、サポート、紛争対応、集客、決済、オンチェーン記録の費用を控除する必要があります。各チームは自分のAI利用費を負担する想定です。継続率・獲得費用・有料化意向は未検証です。
+## Architecture and tests
 
-## 技術構成
-
-- フロント：HTML/CSS/JavaScript、ビルド不要、ブラウザ体験版はlocalStorage
-- ローカルAPI：Python標準ライブラリ、SQLiteのトランザクションでポイント移動
-- スキル：共通SKILL.mdとPythonクライアント、ブラウザによる接続許可
-- Solana：Ed25519署名したMemo（Devnetのみ、送信未確認）
+- Browser preview: HTML, CSS, and JavaScript; no build step; `localStorage` state.
+- Local API: Python standard library and SQLite; approval transfers reserved credits in one transaction.
+- Skill package: shared `SKILL.md`, Python client, and browser-approved local connection.
+- Solana: operator-signed Memo on Devnet only; submission not yet verified.
 
 ```text
-人間 + AI → 専用スキル → localhost API → SQLite台帳
-                           ↑
-                     ブラウザで接続許可・確認
-完了レコード → SHA-256 → Devnet Memo（任意・別スクリプト）
+Human + AI → skill package → localhost API → SQLite ledger
+                                ↑
+                         Browser approval
+Completed-job record → SHA-256 → Devnet Memo (optional separate script)
 ```
 
-ログインはデモの役割切り替えです。localhostのみで動かし、インターネットにサーバーをそのまま公開しないでください。Skill内の指示はOSレベルのサンドボックスを実装するものではありません。
-
-## テスト
+The demo's team choice is role selection, not production login. Run the server only on localhost; do not expose it directly to the public internet. The skill instructions do not implement an operating-system sandbox.
 
 ```sh
 python3 -m unittest discover -s tests -v
 ```
 
-仕事交換の往復、残高予約、修正依頼、誤った承認、並行承認による二重払い、成果物ハッシュを検証します。
+Six tests cover the work-exchange loop, point reservation, revisions, unauthorized approval, concurrent approval without double payment, and completion hashing. See [STATUS.md](STATUS.md) for the current verification record.
 
-## 去年の応募との関係
+## Relationship to last year's submission
 
-参考：[2025 CONPRO AI Chain / SOUL CHAIN](https://github.com/yosimin265/yosi1)。昨年の「目的→仕組み→将来像」という説明構成を参考にしました。今年は別企画・別ソースとして作成し、操作できるデモ、再現手順、実装範囲、動画2本を追加しています。去年の資料や知財主張は転載していません。
+The [2025 CONPRO AI Chain / SOUL CHAIN repository](https://github.com/yosimin265/yosi1) informed the high-level *purpose → mechanism → future direction* explanation. PairWork is a separate concept and codebase, with a playable demo, reproducible steps, stated implementation boundaries, and two videos. Last year's documents and intellectual-property claims were not copied.
 
-## References
+## References and independence
 
-- [Codex / skills](https://developers.openai.com/codex/skills/)
-- [Claude Code / skills](https://code.claude.com/docs/en/skills)
-- [Solana transactions](https://solana.com/docs/core/transactions)
+- [Codex skill documentation](https://developers.openai.com/codex/skills/)
+- [Claude Code skill documentation](https://code.claude.com/docs/en/skills)
+- [Solana transaction documentation](https://solana.com/docs/core/transactions)
 
-Codex、Claude Code、Solanaはそれぞれの提供者の製品・ネットワークです。本プロジェクトは独立した試作です。
+Codex, Claude Code, and Solana belong to their respective providers. PairWork is an independent prototype.

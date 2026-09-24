@@ -1,36 +1,37 @@
-# 制作状況・検証記録
+# Build status and verification record
 
-## 実装済み
+## Implemented
 
-- ブラウザ体験版（index.html）、Pythonローカルサーバー版、SQLite永続化。
-- 2チームのデモログイン、案件投稿、受注、納品、修正依頼、承認。
-- 投稿時の残高予約、承認時の原子的なポイント移動、二重承認拒否。
-- ローカル完了レコードと成果物のSHA-256。
-- Codex/Claude Code向け共通スキルと導入スクリプト。
-- ブラウザで許可するローカル接続。セッションは8時間・サーバー再起動で失効。
-- Devnet限定の署名付きMemo送信コード。
-- 写真を用いた編集デザインのWeb画面と資料ページ。2枚の人物写真はAI生成画像。
-- デモ解説60秒・投資家向け54秒の動画。英語の合成音声ナレーション、画面内英語字幕、WebVTT・SRT、概要PDF、日英説明。
+- Playable browser preview (`index.html`), local Python server, and SQLite persistence.
+- Two demo teams; job posting, acceptance, delivery, revision requests, and approval.
+- Credit reservation when a job is posted; atomic credit transfer on approval; duplicate-approval rejection.
+- Local completion records and SHA-256 hashes of deliverables.
+- Shared skill package and installer for Codex and Claude Code.
+- Browser-approved local connection. Sessions expire after eight hours or a server restart.
+- Code for operator-signed Solana Devnet Memo submission, limited to Devnet.
+- Editorial web and materials pages with two AI-generated photographs and explanatory diagrams.
+- A 60-second product walkthrough and a 54-second investor video with synthetic English narration, baked-in English captions, WebVTT and SRT files, plus an English overview.
 
-## 確認済み
+## Verified
 
-- ユニットテスト6件成功（交換の往復、並行承認、権限、残高予約、修正、ハッシュ）。
-- ブラウザで翻訳の受注・サンプル納品・承認・50pt移動。
-- 受注者が350ptになり、新たな50ptのコードレビューを投稿できる。
-- クライアントの接続開始→ブラウザ許可→残高250pt取得。
-- SKILL.mdの公式同梱バリデータを通過。
+- Six unit tests passed: exchange loop, concurrent approval, authorization, credit reservation, revision, and hashing.
+- In the browser, the starter documentation-polishing job was accepted, a sample result submitted and approved, and 50 credits transferred.
+- The specialist's balance became 350 credits and could fund a new 50-credit code-review request.
+- The common client started a connection, received browser approval, and retrieved the requester's 250-credit balance.
+- The bundled skill passed the official `SKILL.md` validator.
+- Both videos decoded completely as H.264/AAC with audible-range narration tracks; all captions and selected frames were visually inspected. Playback in Safari or Chrome has not been verified as part of this record.
 
-## 未確認・未実装
+## Unverified or unimplemented
 
-- 両AI製品にスキルを導入した状態での実機操作。クライアント動作確認と区別する。
-- 公開会員認証、外部ホスト、ワンクリック配布、MCPサーバー、課金、高度な評価、不正対策。
-- Pro月額$10、有料会員1,000人、月次売上$10,000（費用控除前）は事業仮説の試算であり、価格・有料化・継続率・獲得費用は未検証。
-- Solana Devnet送信。faucetはInternal errorとHTTP 429を返した。確認済み署名なし。
-- 当事者双方のウォレット署名、成果物の品質証明、利用枠節約の定量効果。
-- 今年の募集要項・締切・指定尺。提出そのものは行っていない。
+- End-to-end use of the installed skill inside either Codex or Claude Code. The validated common client is separate from in-product testing.
+- Public account authentication, external hosting of the Python API, one-click installation, an MCP server, billing, advanced ratings, and fraud defenses.
+- The proposed $10/month Pro plan, 1,000 paying members, and $10,000 monthly revenue before costs. Price, conversion, retention, and acquisition cost are untested assumptions.
+- A confirmed Solana Devnet transaction. The faucet returned an internal error and HTTP 429; no confirmed signature is available.
+- Signatures from both job parties, independent proof of work quality, or measured time and AI-usage savings.
+- This year's hackathon rules, deadline, and required video lengths. No submission has been made.
 
-動画は実装画面のキャプチャ、説明スライド、AI生成の編集写真を使った構成。英語の合成音声ナレーションと字幕を付けている。サンプル翻訳を使い、実行中AI画面の録画ではない。画像の生成プロンプトは [IMAGE_PROMPTS.md](IMAGE_PROMPTS.md) を参照。
+The videos use an illustrated demo flow, explanatory slides, and AI-generated editorial photographs. They include synthetic English narration and captions. The current demo uses a sample documentation edit; neither video shows an AI product completing a job live. See [IMAGE_PROMPTS.md](IMAGE_PROMPTS.md) for the generated-image prompts.
 
-## 1日版の設計変更
+## One-day scope decision
 
-Next.js/Supabase/MCPのフル構成から、Python標準ライブラリ/SQLite/直接APIスキルへ縮小。追加サービス契約なしでデモを起動できることを優先。実会員認証や自動実行は次段階。
+To make the demo reproducible without another service account, this build uses Python's standard library, SQLite, and a direct-API skill instead of a full Next.js/Supabase/MCP stack. Public user authentication, automatic execution, and production operations are later-stage work.

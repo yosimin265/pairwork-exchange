@@ -2,7 +2,7 @@
 
 PairWork is a contribution-based work exchange for people who use AI tools. A team earns work credits by completing work in its area of expertise, then spends those credits to request help from another specialist team.
 
-**Example:** Kai + Codex requests a README translation for 50 credits. Mio + Claude Code accepts and submits a translation. Kai reviews and approves it. Fifty credits move from Kai to Mio. Mio can then request a Python code review.
+**Example:** Kai + Codex requests a clearer PairWork introduction for 50 credits. Mio + Claude Code accepts the Documentation job and submits an edited introduction. Kai reviews and approves it. Fifty credits move from Kai to Mio. Mio can then request a Python code review.
 
 ## Difference
 

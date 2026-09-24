@@ -13,7 +13,7 @@ STATIC_FILES={
  '/videos/demo.mp4':'videos/demo.mp4','/videos/investor.mp4':'videos/investor.mp4',
  '/videos/demo.srt':'videos/demo.srt','/videos/investor.srt':'videos/investor.srt',
  '/videos/demo.vtt':'videos/demo.vtt','/videos/investor.vtt':'videos/investor.vtt',
- '/docs/overview-ja.pdf':'docs/overview-ja.pdf',
+ '/docs/overview-en.pdf':'docs/overview-en.pdf',
  '/docs/overview-en.md':'docs/overview-en.md',
  '/docs/demo-poster.png':'docs/demo-poster.png',
  '/docs/investor-poster.png':'docs/investor-poster.png',
@@ -24,43 +24,68 @@ DB=DATA/'demo.sqlite3'
 SESSIONS={}; DEVICES={}; TOKENS={}
 
 def seed():
- return {'pairs':[{'id':'a','name':'Kai + Codex','specialty':'Python / Code review','balance':300,'completed':0}, {'id':'b','name':'Mio + Claude Code','specialty':'Translation / Documentation','balance':300,'completed':0}], 'jobs':[{'id':'job-001','creator':'a','worker':None,'title':'READMEを英語に翻訳','description':'# PairWork\n人間とAIのチームで仕事を交換します。得意な仕事でポイントを獲得し、苦手な仕事を依頼できます。','category':'Translation','points':50,'status':'open','result':'','hash':None,'receipt':None}], 'ledger':[], 'events':['デモを開始しました。各チーム300pt。']}
+ return {'pairs':[{'id':'a','name':'Kai + Codex','specialty':'Python / Code review','balance':300,'completed':0}, {'id':'b','name':'Mio + Claude Code','specialty':'Translation / Documentation','balance':300,'completed':0}], 'jobs':[{'id':'job-001','creator':'a','worker':None,'title':'Polish the PairWork introduction','description':'# PairWork\nPlease edit this introduction for clarity: Human-AI teams exchange specialized work using internal credits. Contributors earn credits when a requester approves their work, then spend credits when they need specialist help.','category':'Documentation','points':50,'status':'open','result':'','hash':None,'receipt':None}], 'ledger':[], 'events':['Demo started. Each team has 300 credits.']}
+
+def migrate_seeded_copy(state):
+ """Translate only the original demo fixture in an existing local database."""
+ old_title='READMEを英語に翻訳'
+ old_description='# PairWork\n人間とAIのチームで仕事を交換します。得意な仕事でポイントを獲得し、苦手な仕事を依頼できます。'
+ old_event='デモを開始しました。各チーム300pt。'
+ fixture=seed()
+ replacement=fixture['jobs'][0]
+ changed=False
+ for job in state.get('jobs',[]):
+  if job.get('id')!='job-001':continue
+  if job.get('title')==old_title:
+   job['title']=replacement['title'];changed=True
+   if job.get('category')=='Translation':job['category']=replacement['category']
+  if job.get('description')==old_description:
+   job['description']=replacement['description'];changed=True
+ if changed:
+  state['events']=[event[:-len(old_title)]+replacement['title'] if event.endswith(' / '+old_title) else event for event in state.get('events',[])]
+ events=state.get('events',[])
+ if old_event in events:
+  state['events']=[fixture['events'][0] if event==old_event else event for event in events];changed=True
+ return changed
 
 def connection():
  c=sqlite3.connect(DB,timeout=10);c.execute('CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY, data TEXT NOT NULL)')
- c.execute('INSERT OR IGNORE INTO state VALUES (1,?)',(json.dumps(seed(),ensure_ascii=False),));c.commit();return c
+ c.execute('INSERT OR IGNORE INTO state VALUES (1,?)',(json.dumps(seed(),ensure_ascii=False),))
+ state=json.loads(c.execute('SELECT data FROM state WHERE id=1').fetchone()[0])
+ if migrate_seeded_copy(state):c.execute('UPDATE state SET data=? WHERE id=1',(json.dumps(state,ensure_ascii=False),))
+ c.commit();return c
 
 def read_state():
  with connection() as c:return json.loads(c.execute('SELECT data FROM state WHERE id=1').fetchone()[0])
 
 def apply(s,who,action,args):
  pairs={p['id']:p for p in s['pairs']}
- if who not in pairs:raise ValueError('ログインしてください')
+ if who not in pairs:raise ValueError('Please sign in.')
  if action=='create_job':
   title=str(args.get('title','')).strip(); desc=str(args.get('description','')).strip();points=args.get('points',50)
-  if not title or len(title)>120 or not desc or len(desc)>12000:raise ValueError('件名と依頼内容を入力してください')
-  if type(points)!=int or not 1<=points<=300:raise ValueError('ポイントは1〜300の整数です')
+  if not title or len(title)>120 or not desc or len(desc)>12000:raise ValueError('Enter a title and description.')
+  if type(points)!=int or not 1<=points<=300:raise ValueError('Credits must be an integer from 1 to 300.')
   reserved=sum(j['points'] for j in s['jobs'] if j['creator']==who and j['status'] not in ('completed','cancelled'))
-  if pairs[who]['balance']-reserved<points:raise ValueError('予約済みポイントを除いた残高が不足しています')
+  if pairs[who]['balance']-reserved<points:raise ValueError('Not enough available credits after reservations.')
   j={'id':'job-'+secrets.token_hex(4),'creator':who,'worker':None,'title':title,'description':desc,'category':str(args.get('category','Code review'))[:40],'points':points,'status':'open','result':'','hash':None,'receipt':None};s['jobs'].append(j)
  else:
   j=next((j for j in s['jobs'] if j['id']==args.get('job_id')),None)
-  if not j:raise ValueError('仕事が見つかりません')
+  if not j:raise ValueError('Job not found.')
   if action=='accept_job':
-   if j['creator']==who or j['status']!='open':raise ValueError('この仕事は受注できません')
+   if j['creator']==who or j['status']!='open':raise ValueError('This job cannot be accepted.')
    j.update(worker=who,status='accepted')
   elif action=='submit_job':
    result=str(args.get('result','')).strip()
-   if j['worker']!=who or j['status'] not in ('accepted','revision_requested'):raise ValueError('受注者だけが納品できます')
-   if not result or len(result)>20000:raise ValueError('成果物は1〜20000文字です')
+   if j['worker']!=who or j['status'] not in ('accepted','revision_requested'):raise ValueError('Only the assigned worker can deliver.')
+   if not result or len(result)>20000:raise ValueError('The deliverable must be 1 to 20,000 characters.')
    j.update(result=result,status='submitted')
   elif action=='reject_result':
-   if j['creator']!=who or j['status']!='submitted':raise ValueError('発注者だけが修正依頼できます')
+   if j['creator']!=who or j['status']!='submitted':raise ValueError('Only the requester can ask for a revision of submitted work.')
    j['status']='revision_requested'
   elif action=='approve_result':
-   if j['creator']!=who or j['status']!='submitted':raise ValueError('未承認の納品を発注者が承認してください')
+   if j['creator']!=who or j['status']!='submitted':raise ValueError('Only the requester can approve a pending delivery.')
    payer=pairs[who];payee=pairs[j['worker']]
-   if payer['balance']<j['points']:raise ValueError('残高不足')
+   if payer['balance']<j['points']:raise ValueError('Not enough credits.')
    payer['balance']-=j['points'];payee['balance']+=j['points'];payee['completed']+=1
    j['status']='completed';j['completed_at']=int(time.time())
    record={k:j[k] for k in ('id','creator','worker','points','completed_at')}
@@ -68,9 +93,9 @@ def apply(s,who,action,args):
    j['proof']=record;j['hash']=hashlib.sha256(json.dumps(record,sort_keys=True,separators=(',',':')).encode()).hexdigest()
    s['ledger'].extend([{'job_id':j['id'],'pair':who,'amount':-j['points']},{'job_id':j['id'],'pair':j['worker'],'amount':j['points']}])
   elif action=='cancel_job':
-   if j['creator']!=who or j['status']!='open':raise ValueError('募集前の仕事のみ取り消せます')
+   if j['creator']!=who or j['status']!='open':raise ValueError('Only the requester can cancel an open job.')
    j['status']='cancelled'
-  else:raise ValueError('不明な操作です')
+  else:raise ValueError('Unknown action.')
  s['events'].insert(0, pairs[who]['name']+' / '+action+' / '+j['title'])
  s['events']=s['events'][:30]
  return j
@@ -139,16 +164,16 @@ class Handler(BaseHTTPRequestHandler):
     return self.send(200,{'code':code,'url':f'http://127.0.0.1:{self.server.server_port}/?connect={code}'})
    if path in ('/api/device/approve','/api/device/poll'):
     d=DEVICES.get(a.get('code'))
-    if not d or d['expires']<time.time():raise ValueError('接続リンクの有効期限が切れました')
+    if not d or d['expires']<time.time():raise ValueError('The connection link has expired.')
     if path.endswith('approve'):
      who=self.who()
-     if not who:raise ValueError('先にデモログインしてください')
+     if not who:raise ValueError('Sign in to the demo first.')
      d['pair']=who;return self.send(200,{'approved':True})
     if not d['pair']:return self.send(200,{'pending':True})
     token=secrets.token_urlsafe(32);TOKENS[token]={'pair':d['pair'],'expires':time.time()+28800};del DEVICES[a['code']]
     return self.send(200,{'token':token,'pair':d['pair']})
    who=self.who()
-   if not who:return self.send(401,{'error':'ログインが必要です'})
+   if not who:return self.send(401,{'error':'Sign-in required.'})
    if path!='/api/action':return self.send(404,{'error':'Not found'})
    return self.send(200,mutate(who,a.get('action'),a.get('args',{})))
   except (ValueError,TypeError,KeyError,json.JSONDecodeError) as e:return self.send(400,{'error':str(e)})

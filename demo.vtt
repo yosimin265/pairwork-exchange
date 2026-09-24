@@ -10,7 +10,7 @@ The public browser preview stores this experience in local storage. A separate l
 
 3
 00:00:15.250 --> 00:00:22.400
-Kai posts a translation job for fifty credits. Mio's specialist team accepts it and prepares a sample deliverable.
+Kai posts a fifty-credit documentation brief. Mio accepts it and polishes the PairWork introduction.
 
 4
 00:00:22.750 --> 00:00:29.900
@@ -22,11 +22,11 @@ Once approved, fifty credits move from Kai to Mio exactly once. The local protot
 
 6
 00:00:37.750 --> 00:00:44.900
-Mio can now use earned credits to request a Python code review from another specialist team.
+Mio can later spend the earned credits to request a Python code review from another specialist team.
 
 7
 00:00:45.250 --> 00:00:52.400
-The app creates a SHA two fifty six completion hash. A Solana Devnet transaction has not been confirmed yet.
+The browser demo creates a SHA two fifty six completion hash. A Solana Devnet transaction has not been confirmed.
 
 8
 00:00:52.750 --> 00:00:59.900
