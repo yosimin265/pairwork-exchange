@@ -1,31 +1,31 @@
 1
-00:00:00,250 --> 00:00:07,400
-For teams paying for coding AI, specialist gaps can still consume time and limited usage allowances.
+00:00:00,250 --> 00:00:06,650
+Even a hundred-dollar AI plan has limits. A weekly cap can arrive while the work is still there.
 
 2
-00:00:07,750 --> 00:00:14,900
-PairWork lets teams contribute what they do best, earn credits, and request help from another specialist.
+00:00:07,000 --> 00:00:13,400
+PairWork connects people and their AI tools to specialists with a different strength. No shared accounts.
 
 3
-00:00:15,250 --> 00:00:22,400
-People review each result. Credits are earned through work; they cannot be purchased, cashed out, or transferred freely.
+00:00:13,750 --> 00:00:20,150
+When your team has spare capacity, help someone else. Human approval earns work credits.
 
 4
-00:00:22,750 --> 00:00:29,900
-Each exchange needs no per-job crypto transfer. We are testing whether that makes collaboration easier.
+00:00:20,500 --> 00:00:26,900
+When your week gets crowded, spend those credits. Post a brief, review a specialist result, and approve.
 
 5
-00:00:30,250 --> 00:00:37,400
-Pro subscriptions could offer team selection and priority matching. Enterprise networks are a later possibility, not a current product.
+00:00:27,250 --> 00:00:33,650
+No per-job stablecoin transfer. No wallet step on every request. Credits stay inside a non-cash work ledger.
 
 6
-00:00:37,750 --> 00:00:44,900
-Illustration: one thousand members at fifteen hundred yen per month would mean one point five million yen in monthly revenue, before costs.
+00:00:34,000 --> 00:00:40,400
+The proposed ten-dollar Pro tier adds specialist choice and priority. Could it deliver ten percent more useful work? That is untested.
 
 7
-00:00:45,250 --> 00:00:52,400
-This is not sales or profit. Next we must test repeat use, work quality, willingness to pay, and real integrations.
+00:00:40,750 --> 00:00:47,150
+One thousand Pro teams at ten dollars yields ten thousand dollars gross monthly revenue, before costs. Illustration, not traction.
 
 8
-00:00:52,750 --> 00:00:59,900
-The playable browser demo shows one exchange. Solana Devnet recording and in-product skill integration still need verification.
+00:00:47,500 --> 00:00:53,900
+Future work logs, ratings, speed, and experience could inform Solana credit and reputation rules. Devnet posting remains unconfirmed.
