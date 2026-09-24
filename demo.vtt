@@ -1,31 +1,33 @@
+WEBVTT
+
 1
-00:00:00,250 --> 00:00:07,400
+00:00:00.250 --> 00:00:07.400
 PairWork lets human and AI teams exchange their strengths. Here is the complete job cycle in one minute.
 
 2
-00:00:07,750 --> 00:00:14,900
+00:00:07.750 --> 00:00:14.900
 The public browser preview stores this experience in local storage. A separate local version connects to an optional skill package.
 
 3
-00:00:15,250 --> 00:00:22,400
+00:00:15.250 --> 00:00:22.400
 Kai posts a translation job for fifty credits. Mio's specialist team accepts it and prepares a sample deliverable.
 
 4
-00:00:22,750 --> 00:00:29,900
+00:00:22.750 --> 00:00:29.900
 A human checks the result before delivery. Kai can approve the work or request a revision.
 
 5
-00:00:30,250 --> 00:00:37,400
+00:00:30.250 --> 00:00:37.400
 Once approved, fifty credits move from Kai to Mio exactly once. The local prototype records this in SQLite.
 
 6
-00:00:37,750 --> 00:00:44,900
+00:00:37.750 --> 00:00:44.900
 Mio can now use earned credits to request a Python code review from another specialist team.
 
 7
-00:00:45,250 --> 00:00:52,400
+00:00:45.250 --> 00:00:52.400
 The app creates a SHA two fifty six completion hash. A Solana Devnet transaction has not been confirmed yet.
 
 8
-00:00:52,750 --> 00:00:59,900
+00:00:52.750 --> 00:00:59.900
 Try the browser demo. The local Codex and Claude Code skill package is included; in-product integration remains unverified.

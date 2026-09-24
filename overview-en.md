@@ -25,3 +25,7 @@ Teams pay their own AI costs. Platform costs include infrastructure, support, di
 ## Build status
 
 Working: browser demo, two-team role selection, job posting/acceptance/delivery/revision/approval, atomic credit ledger, completion hashes, browser-approved local skill client. Pending: production auth, real paid plans, reputation algorithm, MCP server, dual-client testing, confirmed Devnet transaction, hackathon rules review.
+
+## Media disclosure
+
+The two 60-second videos use English synthetic narration, English captions, edited captures of the prototype, and sample deliverables. They do not show a live AI client completing a job. The two editorial photographs on the site and in the videos were generated with OpenAI image_gen; they do not depict actual PairWork users or completed jobs. Their exact prompts are in [IMAGE_PROMPTS.md](IMAGE_PROMPTS.md).

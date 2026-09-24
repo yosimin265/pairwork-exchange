@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
 """PairWork: loopback-only, two-person hackathon demo. Python 3.10+."""
-import hashlib, json, os, secrets, sqlite3, time
+import hashlib, json, mimetypes, os, secrets, sqlite3, time
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from http.cookies import SimpleCookie
 from urllib.parse import urlparse
 ROOT=Path(__file__).resolve().parent
+STATIC_FILES={
+ '/':'index.html','/index.html':'index.html','/materials.html':'materials.html',
+ '/editorial-collaboration.png':'editorial-collaboration.png',
+ '/editorial-review.png':'editorial-review.png',
+ '/videos/demo.mp4':'videos/demo.mp4','/videos/investor.mp4':'videos/investor.mp4',
+ '/videos/demo.srt':'videos/demo.srt','/videos/investor.srt':'videos/investor.srt',
+ '/videos/demo.vtt':'videos/demo.vtt','/videos/investor.vtt':'videos/investor.vtt',
+ '/docs/overview-ja.pdf':'docs/overview-ja.pdf',
+ '/docs/overview-en.md':'docs/overview-en.md',
+ '/docs/demo-poster.png':'docs/demo-poster.png',
+ '/docs/investor-poster.png':'docs/investor-poster.png',
+}
 DATA=Path(os.environ.get('PAIRWORK_DATA',str(ROOT/'.pairwork')))
 DATA.mkdir(exist_ok=True)
 DB=DATA/'demo.sqlite3'
@@ -89,9 +101,26 @@ class Handler(BaseHTTPRequestHandler):
   path=urlparse(self.path).path
   if path=='/api/state':return self.send(200,{'state':read_state(),'pair':self.who(),'mode':'server'})
   if path=='/api/profile':return self.send(200,{'pair':self.who()})
-  files={'/':'index.html','/index.html':'index.html'}
-  if path not in files:return self.send(404,{'error':'Not found'})
-  blob=(ROOT/files[path]).read_bytes();self.send_response(200);self.send_header('Content-Type','text/html; charset=utf-8');self.send_header('X-Content-Type-Options','nosniff');self.send_header('Content-Length',str(len(blob)));self.end_headers();self.wfile.write(blob)
+  if path not in STATIC_FILES:return self.send(404,{'error':'Not found'})
+  target=ROOT/STATIC_FILES[path]
+  if not target.is_file():return self.send(404,{'error':'Not found'})
+  blob=target.read_bytes();content_type=mimetypes.guess_type(target.name)[0] or 'application/octet-stream'
+  if content_type.startswith('text/'):content_type+='; charset=utf-8'
+  status=200;start=0;end=len(blob)-1
+  if target.suffix=='.mp4' and self.headers.get('Range','').startswith('bytes='):
+   try:
+    raw_start,raw_end=self.headers['Range'][6:].split('-',1)
+    start=int(raw_start) if raw_start else max(0,len(blob)-int(raw_end))
+    end=min(end,int(raw_end)) if raw_start and raw_end else end
+    if start<0 or start>end:raise ValueError()
+    status=206
+   except ValueError:
+    self.send_response(416);self.send_header('Content-Range',f'bytes */{len(blob)}');self.end_headers();return
+  self.send_response(status);self.send_header('Content-Type',content_type);self.send_header('Cache-Control','no-store');self.send_header('X-Content-Type-Options','nosniff')
+  if target.suffix=='.mp4':
+   self.send_header('Accept-Ranges','bytes')
+   if status==206:self.send_header('Content-Range',f'bytes {start}-{end}/{len(blob)}')
+  self.send_header('Content-Length',str(end-start+1));self.end_headers();self.wfile.write(blob[start:end+1])
  def do_POST(self):
   if not self.valid_host():return self.send(403,{'error':'Loopback only'})
   origin=self.headers.get('Origin')
